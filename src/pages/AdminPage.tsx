@@ -3,10 +3,9 @@ import {
   Container,
   Typography,
   Box,
-  Paper,
+
   Tabs,
   Tab,
-  Alert,
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,

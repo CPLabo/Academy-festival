@@ -6,11 +6,10 @@ import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
-  Paper,
+
   TextField,
   Button,
   Grid,
-  Alert,
   CircularProgress,
   Accordion,
   AccordionSummary,
@@ -31,7 +30,6 @@ import { adminService } from '../services/adminService';
 import { FestivalData, FestivalDataUpdate } from '../types/admin';
 
 const FestivalDataEditor: React.FC = () => {
-  const [festivalData, setFestivalData] = useState<FestivalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +62,6 @@ const FestivalDataEditor: React.FC = () => {
       setError(null);
       const response = await adminService.getFestivalData();
       if (response.success && response.data) {
-        setFestivalData(response.data || null);
         setSchedule(response.data.schedule || {});
         setLocations(response.data.locations || {});
         setFood(response.data.food || []);
@@ -95,7 +92,6 @@ const FestivalDataEditor: React.FC = () => {
       const response = await adminService.updateFestivalData(updateData);
       if (response.success) {
         setSuccess('学園祭データを正常に更新しました');
-        setFestivalData(response.data || null);
       } else {
         setError(response.message);
       }

@@ -5,10 +5,10 @@
 import React from 'react';
 import {
   Box,
-  Paper,
+
   Typography,
   Avatar,
-  Chip,
+
 } from '@mui/material';
 import {
   Person as UserIcon,
