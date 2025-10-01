@@ -9,7 +9,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "http://100.126.49.60:8000/api/:splat"
+  to = "https://gpu-server.tail7a8809.ts.net/api/:splat"
   status = 200
   force = true
 
