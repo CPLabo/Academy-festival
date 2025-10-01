@@ -7,11 +7,11 @@ import {
   CircularProgress,
   Paper,
 } from '@mui/material';
-import { ChatMessage } from '../types/chat';
-import ChatMessage as ChatMessageComponent from './ChatMessage';
+import { ChatMessage as ChatMessageType } from '../types/chat';
+import ChatMessage from './ChatMessage';
 
 interface ChatMessageListProps {
-  messages: ChatMessage[];
+  messages: ChatMessageType[];
   isLoading?: boolean;
 }
 
@@ -24,7 +24,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
       <List sx={{ p: 0 }}>
         {messages.map((message) => (
           <ListItem key={message.id} sx={{ display: 'block', px: 2, py: 1 }}>
-            <ChatMessageComponent message={message} />
+            <ChatMessage message={message} />
           </ListItem>
         ))}
         
