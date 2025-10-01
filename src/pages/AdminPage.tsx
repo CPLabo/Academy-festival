@@ -4,7 +4,6 @@ import {
   Paper,
   Container,
   Typography,
-
   Tabs,
   Tab,
 } from '@mui/material';
@@ -12,10 +11,12 @@ import {
   Dashboard as DashboardIcon,
   People as PeopleIcon,
   Edit as EditIcon,
+  Psychology as PsychologyIcon,
 } from '@mui/icons-material';
 import SystemStats from '../components/SystemStats';
 import SessionList from '../components/SessionList';
 import FestivalDataEditor from '../components/FestivalDataEditor';
+import ModelManager from '../components/ModelManager';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -50,6 +51,11 @@ const AdminPage: React.FC = () => {
     setTabValue(newValue);
   };
 
+  const handleModelChange = (modelName: string) => {
+    console.log('Model changed to:', modelName);
+    // 必要に応じて他のコンポーネントに通知
+  };
+
   return (
     <Container maxWidth="xl" sx={{ mt: 4, mb: 4 }}>
       <Paper elevation={3}>
@@ -66,6 +72,11 @@ const AdminPage: React.FC = () => {
               <Tab 
                 icon={<DashboardIcon />} 
                 label="ダッシュボード" 
+                iconPosition="start"
+              />
+              <Tab 
+                icon={<PsychologyIcon />} 
+                label="AIモデル管理" 
                 iconPosition="start"
               />
               <Tab 
@@ -89,10 +100,14 @@ const AdminPage: React.FC = () => {
           </TabPanel>
 
           <TabPanel value={tabValue} index={1}>
-            <SessionList />
+            <ModelManager onModelChange={handleModelChange} />
           </TabPanel>
 
           <TabPanel value={tabValue} index={2}>
+            <SessionList />
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={3}>
             <FestivalDataEditor />
           </TabPanel>
         </Box>
