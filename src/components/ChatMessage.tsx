@@ -4,12 +4,14 @@
 
 import React from 'react';
 import {
+  Avatar,
   Paper,
   Box,
   Typography,
 
 } from '@mui/material';
 import {
+  SmartToy as BotIcon,
   Person as UserIcon,
 } from '@mui/icons-material';
 import { ChatMessage as ChatMessageType } from '../types/chat';
