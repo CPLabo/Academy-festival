@@ -1,0 +1,19 @@
+[build]
+  publish = "build"
+  command = "npm install --prefer-offline --no-audit && npm run build"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_VERSION = "10"
+  NODE_OPTIONS = "--max-old-space-size=4096"
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://gpu-server.tail7a8809.ts.net/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
