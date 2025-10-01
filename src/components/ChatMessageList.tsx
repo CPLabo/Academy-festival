@@ -8,7 +8,7 @@ import {
   Paper,
 } from '@mui/material';
 import { ChatMessage } from '../types/chat';
-import ChatMessage from './ChatMessage';
+import ChatMessage as ChatMessageComponent from './ChatMessage';
 
 interface ChatMessageListProps {
   messages: ChatMessage[];
@@ -24,7 +24,7 @@ const ChatMessageList: React.FC<ChatMessageListProps> = ({
       <List sx={{ p: 0 }}>
         {messages.map((message) => (
           <ListItem key={message.id} sx={{ display: 'block', px: 2, py: 1 }}>
-            <ChatMessage message={message} />
+            <ChatMessageComponent message={message} />
           </ListItem>
         ))}
         
