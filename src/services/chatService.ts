@@ -19,7 +19,7 @@ class ChatService {
    */
   async sendMessage(request: ChatRequest): Promise<ChatResponse> {
     try {
-      const response = await axios.post(`${this.baseURL}/chat/session`, request);
+      const response = await axios.post(`${this.baseURL}/api/v1/chat/session`, request);
       return response.data;
     } catch (error) {
       console.error('チャットメッセージ送信エラー:', error);
@@ -32,7 +32,7 @@ class ChatService {
    */
   async getChatHistory(sessionId: string): Promise<ChatMessage[]> {
     try {
-      const response = await axios.get(`${this.baseURL}/chat/session/${sessionId}`);
+      const response = await axios.get(`${this.baseURL}/api/v1/chat/session/${sessionId}`);
       return response.data;
     } catch (error) {
       console.error('チャット履歴取得エラー:', error);
@@ -45,7 +45,7 @@ class ChatService {
    */
   async createSession(): Promise<string> {
     try {
-      const response = await axios.post(`${this.baseURL}/chat/session`);
+      const response = await axios.post(`${this.baseURL}/api/v1/chat/session`);
       return response.data.session_id;
     } catch (error) {
       console.error('セッション作成エラー:', error);
