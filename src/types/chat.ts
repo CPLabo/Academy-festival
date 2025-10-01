@@ -15,10 +15,9 @@ export interface ChatRequest {
 }
 
 export interface ChatResponse {
-  message: string;
+  response: string;
   session_id: string;
-  timestamp: string;
-  sources?: string[];
+  messages: ChatMessage[];
 }
 
 export interface ChatSession {

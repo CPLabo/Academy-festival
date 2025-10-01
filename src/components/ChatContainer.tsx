@@ -1,42 +1,23 @@
-/**
- * チャットコンテナコンポーネント
- */
-
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
-  Alert,
-
+  Paper,
   Typography,
   CircularProgress,
-  Button,
+  Alert,
 } from '@mui/material';
-import {
-  Refresh as RefreshIcon,
-} from '@mui/icons-material';
-import ChatMessage from './ChatMessage';
-import ChatInput from './ChatInput';
-import { chatService } from '../services/chatService';
 import { ChatMessage as ChatMessageType } from '../types/chat';
+import { chatService } from '../services/chatService';
+import ChatMessageList from './ChatMessageList';
+import ChatInput from './ChatInput';
 
 const ChatContainer: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [isConnected, setIsConnected] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  // 自動スクロール
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  // 初期化
   useEffect(() => {
     initializeChat();
   }, []);
@@ -45,28 +26,27 @@ const ChatContainer: React.FC = () => {
     try {
       setIsLoading(true);
       setError(null);
-      
+
       // ヘルスチェック
-      const healthy = await chatService.healthCheck();
-      if (!healthy) {
+      const isHealthy = await chatService.healthCheck();
+      if (!isHealthy) {
         throw new Error('サーバーに接続できません');
       }
-      
-      setIsConnected(true);
-      
-      // 新しいセッションを作成
+
+      // セッション作成
       const newSessionId = await chatService.createSession();
       setSessionId(newSessionId);
-      
-      // ウェルカムメッセージを追加
+      setIsConnected(true);
+
+      // 初期メッセージを追加
       const welcomeMessage: ChatMessageType = {
         id: 'welcome',
-        content: 'こんにちは！学園祭案内チャットボットです。学園祭に関する質問を日本語でお気軽にお聞きください。スケジュール、場所、出展、アクセス、飲食、注意事項などについてお答えします。',
+        content: 'こんにちは！学園祭案内AIアシスタントです。何かお手伝いできることはありますか？',
         role: 'assistant',
         timestamp: new Date().toISOString(),
       };
       setMessages([welcomeMessage]);
-      
+
     } catch (err) {
       console.error('チャット初期化エラー:', err);
       setError(err instanceof Error ? err.message : 'チャットの初期化に失敗しました');
@@ -101,9 +81,9 @@ const ChatContainer: React.FC = () => {
       // アシスタントのレスポンスを追加
       const assistantMessage: ChatMessageType = {
         id: Date.now().toString() + '_response',
-        content: response.message,
+        content: response.response,
         role: 'assistant',
-        timestamp: response.timestamp,
+        timestamp: new Date().toISOString(),
       };
       setMessages(prev => [...prev, assistantMessage]);
 
@@ -115,72 +95,41 @@ const ChatContainer: React.FC = () => {
     }
   };
 
-  const handleRetry = () => {
-    initializeChat();
-  };
-
-  if (isLoading && messages.length === 0) {
+  if (isLoading && !sessionId) {
     return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: 400 }}>
+      <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
         <CircularProgress />
-        <Typography variant="body1" sx={{ ml: 2 }}>
-          チャットを初期化中...
-        </Typography>
-      </Box>
-    );
-  }
-
-  if (error && !isConnected) {
-    return (
-      <Box sx={{ p: 3 }}>
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-        <Button
-          variant="contained"
-          startIcon={<RefreshIcon />}
-          onClick={handleRetry}
-        >
-          再接続
-        </Button>
       </Box>
     );
   }
 
   return (
     <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      {/* メッセージ表示エリア */}
-      <Box
-        sx={{
-          flex: 1,
-          overflow: 'auto',
-          p: 2,
-          minHeight: 400,
-          maxHeight: 600,
-        }}
-      >
-        {messages.map((message) => (
-          <ChatMessage key={message.id || Math.random()} message={message} />
-        ))}
-        
-        {isLoading && messages.length > 0 && (
-          <Box sx={{ display: 'flex', justifyContent: 'flex-start', mb: 2 }}>
-            <CircularProgress size={20} sx={{ mr: 1 }} />
-            <Typography variant="body2" color="text.secondary">
-              入力中...
-            </Typography>
-          </Box>
-        )}
-        
-        <div ref={messagesEndRef} />
+      {/* ヘッダー */}
+      <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Typography variant="h6" component="div">
+          学園祭案内チャットボット
+        </Typography>
+        <Typography variant="body2" color="text.secondary">
+          {isConnected ? '接続中' : '接続エラー'}
+        </Typography>
       </Box>
 
       {/* エラー表示 */}
-      {error && isConnected && (
-        <Alert severity="error" sx={{ m: 2 }}>
+      {error && (
+        <Alert 
+          severity="error" 
+          sx={{ m: 2 }} 
+          onClose={() => setError(null)}
+        >
           {error}
         </Alert>
       )}
+
+      {/* メッセージ一覧 */}
+      <Box sx={{ flex: 1, overflow: 'hidden' }}>
+        <ChatMessageList messages={messages} isLoading={isLoading} />
+      </Box>
 
       {/* 入力エリア */}
       <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
