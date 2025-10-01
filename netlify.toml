@@ -17,9 +17,3 @@
   from = "/*"
   to = "/index.html"
   status = 200
-
-# Cache node_modules for faster builds
-[[plugins]]
-  package = "@netlify/plugin-cache"
-  [plugins.inputs]
-    paths = ["node_modules", ".npm"]
