@@ -19,7 +19,7 @@ class ChatService {
    */
   async sendMessage(request: ChatRequest): Promise<ChatResponse> {
     try {
-      const response = await axios.post(`${this.baseURL}/api/v1/chat/session`, request);
+      const response = await axios.post(`${this.baseURL}/api/v1/chat/session/message`, request);
       return response.data;
     } catch (error) {
       console.error('チャットメッセージ送信エラー:', error);
@@ -33,7 +33,7 @@ class ChatService {
   async getChatHistory(sessionId: string): Promise<ChatMessage[]> {
     try {
       const response = await axios.get(`${this.baseURL}/api/v1/chat/session/${sessionId}`);
-      return response.data;
+      return response.data.messages;
     } catch (error) {
       console.error('チャット履歴取得エラー:', error);
       throw new Error('チャット履歴の取得に失敗しました');
