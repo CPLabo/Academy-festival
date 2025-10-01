@@ -28,7 +28,7 @@ import {
   Save as SaveIcon,
 } from '@mui/icons-material';
 import { adminService } from '../services/adminService';
-import { FestivalData, FestivalDataUpdate } from '../types/admin';
+import { FestivalDataUpdate } from '../types/admin';
 
 const FestivalDataEditor: React.FC = () => {
   const [loading, setLoading] = useState(true);
