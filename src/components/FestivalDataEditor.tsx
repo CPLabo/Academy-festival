@@ -64,7 +64,7 @@ const FestivalDataEditor: React.FC = () => {
       setError(null);
       const response = await adminService.getFestivalData();
       if (response.success && response.data) {
-        setFestivalData(response.data);
+        setFestivalData(response.data || null);
         setSchedule(response.data.schedule || {});
         setLocations(response.data.locations || {});
         setFood(response.data.food || []);
@@ -95,7 +95,7 @@ const FestivalDataEditor: React.FC = () => {
       const response = await adminService.updateFestivalData(updateData);
       if (response.success) {
         setSuccess('学園祭データを正常に更新しました');
-        setFestivalData(response.data);
+        setFestivalData(response.data || null);
       } else {
         setError(response.message);
       }
