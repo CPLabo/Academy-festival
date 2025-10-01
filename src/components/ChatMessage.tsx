@@ -5,14 +5,11 @@
 import React from 'react';
 import {
   Box,
-
   Typography,
-  Avatar,
 
 } from '@mui/material';
 import {
   Person as UserIcon,
-  SmartToy as BotIcon,
 } from '@mui/icons-material';
 import { ChatMessage as ChatMessageType } from '../types/chat';
 
