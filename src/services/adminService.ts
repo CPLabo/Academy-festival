@@ -5,7 +5,7 @@
 import axios from 'axios';
 import { SystemStats, ChatSessionInfo, FestivalData, FestivalDataUpdate, SystemConfig, AdminResponse } from '../types/admin';
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://localhost';
+const API_BASE_URL = process.env.REACT_APP_API_URL || '';
 
 class AdminService {
   private baseURL: string;
