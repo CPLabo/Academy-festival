@@ -62,9 +62,9 @@ const ModelManager: React.FC<ModelManagerProps> = ({ onModelChange }) => {
         llmService.getCurrentModel()
       ]);
       
-      setModels(modelsData);
-      setModelStatus(statusData);
-      setCurrentModel(currentData.current_model);
+      setModels(Array.isArray(modelsData) ? modelsData : []);
+      setModelStatus(Array.isArray(statusData) ? statusData : []);
+      setCurrentModel(currentData?.current_model || '');
     } catch (err) {
       setError('データの読み込みに失敗しました');
       console.error('Load data error:', err);
@@ -130,6 +130,9 @@ const ModelManager: React.FC<ModelManagerProps> = ({ onModelChange }) => {
   };
 
   const getModelStatus = (modelName: string): ModelStatus | undefined => {
+    if (!Array.isArray(modelStatus)) {
+      return undefined;
+    }
     return modelStatus.find(status => status.model_name === modelName);
   };
 
@@ -182,7 +185,7 @@ const ModelManager: React.FC<ModelManagerProps> = ({ onModelChange }) => {
       )}
 
       <Grid container spacing={2}>
-        {models.map((model) => {
+        {Array.isArray(models) && models.map((model) => {
           const status = getModelStatus(model.name);
           const isCurrent = model.name === currentModel;
           const isLoaded = status?.is_loaded || false;
