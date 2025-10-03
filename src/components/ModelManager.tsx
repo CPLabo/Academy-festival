@@ -129,8 +129,8 @@ const ModelManager: React.FC<ModelManagerProps> = ({ onModelChange }) => {
     }
   };
 
-  // const getModelStatus = (modelName: string): ModelStatus | undefined => {
-    // return modelStatus.find(status => status.model_name === modelName);
+  const getModelStatus = (modelName: string): ModelStatus | undefined => {
+    return modelStatus.find(status => status.model_name === modelName);
   };
 
   const formatMemoryUsage = (usage: number): string => {
@@ -183,9 +183,9 @@ const ModelManager: React.FC<ModelManagerProps> = ({ onModelChange }) => {
 
       <Grid container spacing={2}>
         {models.map((model) => {
-          // const status = getModelStatus(model.name);
+          const status = getModelStatus(model.name);
           const isCurrent = model.name === currentModel;
-          const isLoaded = modelStatus?.is_loaded && modelStatus.current_model === model.name;
+          const isLoaded = status?.is_loaded || false;
           
           return (
             <Grid item xs={12} md={6} lg={4} key={model.name}>
@@ -337,7 +337,7 @@ const ModelManager: React.FC<ModelManagerProps> = ({ onModelChange }) => {
                 モデル状態
               </Typography>
               {(() => {
-                // const status = getModelStatus(selectedModel.name);
+                const status = getModelStatus(selectedModel.name);
                 return status ? (
                   <List>
                     <ListItem>
