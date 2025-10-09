@@ -7,7 +7,6 @@ import {
   TextField,
   Card,
   CardContent,
-  CardActions,
   Grid,
   Alert,
   CircularProgress,
@@ -20,16 +19,13 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions,
-  LinearProgress
+  DialogActions
 } from '@mui/material';
 import {
   Upload as UploadIcon,
   Search as SearchIcon,
   FileUpload as FileUploadIcon,
-  Delete as DeleteIcon,
-  Info as InfoIcon,
-  CheckCircle as CheckCircleIcon
+  Info as InfoIcon
 } from '@mui/icons-material';
 import { ragService } from '../services/ragService';
 
@@ -56,7 +52,6 @@ const RAGPage: React.FC<RAGPageProps> = ({ onQuery }) => {
   const [searchResults, setSearchResults] = useState<Document[]>([]);
   const [searching, setSearching] = useState(false);
   const [ragQuery, setRagQuery] = useState('');
-  const [ragContext, setRagContext] = useState('');
   const [ragResults, setRagResults] = useState<any>(null);
   const [ragProcessing, setRagProcessing] = useState(false);
   const [collectionInfo, setCollectionInfo] = useState<any>(null);
@@ -146,7 +141,6 @@ const RAGPage: React.FC<RAGPageProps> = ({ onQuery }) => {
       
       if (response.success) {
         setRagResults(response);
-        setRagContext(response.context);
         
         // 親コンポーネントにクエリとコンテキストを渡す
         if (onQuery) {
