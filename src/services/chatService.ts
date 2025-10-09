@@ -58,10 +58,28 @@ class ChatService {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await axios.get(`${this.baseURL}/api/v1/health`);
+      const response = await axios.get(`${this.baseURL}/api/v1/health`, {
+        timeout: 10000, // 10秒のタイムアウト
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
       return response.data.status === 'healthy';
     } catch (error) {
       console.error('ヘルスチェックエラー:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('エラー詳細:', {
+          message: error.message,
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          config: {
+            url: error.config?.url,
+            method: error.config?.method,
+            headers: error.config?.headers
+          }
+        });
+      }
       return false;
     }
   }
