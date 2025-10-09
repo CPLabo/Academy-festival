@@ -14,6 +14,7 @@ import {
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
   AccountCircle as AccountIcon,
+  Storage as RAGIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -67,6 +68,17 @@ const Header: React.FC = () => {
             }}
           >
             チャット
+          </Button>
+          
+          <Button
+            color="inherit"
+            startIcon={<RAGIcon />}
+            onClick={() => navigate('/rag')}
+            sx={{
+              backgroundColor: location.pathname === '/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
+            }}
+          >
+            RAG機能
           </Button>
           
           {/* 管理画面ボタン - 認証状態に関係なく表示（ログイン画面への誘導） */}

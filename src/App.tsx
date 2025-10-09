@@ -4,6 +4,7 @@ import { Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
 import ChatPage from './pages/ChatPage';
 import AdminPage from './pages/AdminPage';
+import RAGPage from './pages/RAGPage';
 import AdminLogin from './components/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';
@@ -16,6 +17,7 @@ function App() {
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
             <Route path="/" element={<ChatPage />} />
+            <Route path="/rag" element={<RAGPage />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route 
               path="/admin" 
