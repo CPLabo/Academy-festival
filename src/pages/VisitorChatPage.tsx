@@ -161,7 +161,7 @@ const VisitorChatPage: React.FC = () => {
                       mt: 1, 
                       opacity: 0.7 
                     }}>
-                      {new Date(message.timestamp).toLocaleTimeString()}
+                      {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : 'now'}
                     </Typography>
                   </Box>
                 </ListItem>
