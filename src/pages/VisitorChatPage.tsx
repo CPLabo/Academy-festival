@@ -20,10 +20,10 @@ import {
   Person as PersonIcon,
   SmartToy as BotIcon,
 } from '@mui/icons-material';
-import { Message } from '../types/chat';
+import { ChatMessage } from '../types/chat';
 
 const VisitorChatPage: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +56,7 @@ const VisitorChatPage: React.FC = () => {
   const sendMessage = async () => {
     if (!inputMessage.trim() || !sessionId || isLoading) return;
 
-    const userMessage: Message = {
+    const userMessage: ChatMessage = {
       role: 'user',
       content: inputMessage,
       timestamp: new Date().toISOString(),
@@ -81,7 +81,7 @@ const VisitorChatPage: React.FC = () => {
 
       if (response.ok) {
         const data = await response.json();
-        const botMessage: Message = {
+        const botMessage: ChatMessage = {
           role: 'assistant',
           content: data.response,
           timestamp: new Date().toISOString(),
