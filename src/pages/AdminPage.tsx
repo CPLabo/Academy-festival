@@ -12,11 +12,13 @@ import {
   People as PeopleIcon,
   Edit as EditIcon,
   Psychology as PsychologyIcon,
+  Description as DescriptionIcon,
 } from '@mui/icons-material';
 import SystemStats from '../components/SystemStats';
 import SessionList from '../components/SessionList';
 import FestivalDataEditor from '../components/FestivalDataEditor';
 import ModelManager from '../components/ModelManager';
+import DocumentManager from '../components/DocumentManager';
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -89,6 +91,11 @@ const AdminPage: React.FC = () => {
                 label="データ編集" 
                 iconPosition="start"
               />
+              <Tab 
+                icon={<DescriptionIcon />} 
+                label="ドキュメント管理" 
+                iconPosition="start"
+              />
             </Tabs>
           </Box>
 
@@ -109,6 +116,10 @@ const AdminPage: React.FC = () => {
 
           <TabPanel value={tabValue} index={3}>
             <FestivalDataEditor />
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={4}>
+            <DocumentManager />
           </TabPanel>
         </Box>
       </Paper>
