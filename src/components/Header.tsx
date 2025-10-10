@@ -8,6 +8,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Chip,
 } from '@mui/material';
 import {
   Chat as ChatIcon,
@@ -15,6 +16,7 @@ import {
   Logout as LogoutIcon,
   AccountCircle as AccountIcon,
   Storage as RAGIcon,
+  Security as SecurityIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
@@ -59,39 +61,69 @@ const Header: React.FC = () => {
         </Typography>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-          <Button
-            color="inherit"
-            startIcon={<ChatIcon />}
-            onClick={() => navigate('/')}
-            sx={{
-              backgroundColor: location.pathname === '/' ? 'rgba(255,255,255,0.1)' : 'transparent',
-            }}
-          >
-            チャット
-          </Button>
-          
-          <Button
-            color="inherit"
-            startIcon={<RAGIcon />}
-            onClick={() => navigate('/rag')}
-            sx={{
-              backgroundColor: location.pathname === '/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
-            }}
-          >
-            RAG機能
-          </Button>
-          
-          {/* 管理画面ボタン - 認証状態に関係なく表示（ログイン画面への誘導） */}
-          <Button
-            color="inherit"
-            startIcon={<AdminIcon />}
-            onClick={handleAdminClick}
-            sx={{
-              backgroundColor: location.pathname.startsWith('/admin') ? 'rgba(255,255,255,0.1)' : 'transparent',
-            }}
-          >
-            管理画面
-          </Button>
+          {location.pathname.startsWith('/admin') ? (
+            // 管理者向けナビゲーション
+            <>
+              <Chip 
+                icon={<SecurityIcon />} 
+                label="管理者モード" 
+                color="warning" 
+                size="small" 
+              />
+              <Button
+                color="inherit"
+                startIcon={<ChatIcon />}
+                onClick={() => navigate('/')}
+              >
+                来場者画面
+              </Button>
+              <Button
+                color="inherit"
+                startIcon={<RAGIcon />}
+                onClick={() => navigate('/admin/rag')}
+                sx={{
+                  backgroundColor: location.pathname === '/admin/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                }}
+              >
+                RAG管理
+              </Button>
+            </>
+          ) : (
+            // 来場者向けナビゲーション
+            <>
+              <Button
+                color="inherit"
+                startIcon={<ChatIcon />}
+                onClick={() => navigate('/')}
+                sx={{
+                  backgroundColor: location.pathname === '/' || location.pathname === '/chat' ? 'rgba(255,255,255,0.1)' : 'transparent',
+                }}
+              >
+                チャット
+              </Button>
+              
+              {isAuthenticated && isAdmin && (
+                <Button
+                  color="inherit"
+                  startIcon={<AdminIcon />}
+                  onClick={() => navigate('/admin')}
+                >
+                  管理画面
+                </Button>
+              )}
+              
+              {!isAuthenticated && (
+                <Button
+                  color="inherit"
+                  startIcon={<AdminIcon />}
+                  onClick={() => navigate('/admin/login')}
+                  size="small"
+                >
+                  管理者
+                </Button>
+              )}
+            </>
+          )}
 
           {/* 管理者メニュー - 認証済みの場合のみ表示 */}
           {isAuthenticated && isAdmin && (

@@ -2,8 +2,8 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import { Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
-import ChatPage from './pages/ChatPage';
-import AdminPage from './pages/AdminPage';
+import VisitorChatPage from './pages/VisitorChatPage';
+import AdminDashboard from './pages/AdminDashboard';
 import RAGPage from './pages/RAGPage';
 import AdminLogin from './components/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
@@ -16,14 +16,25 @@ function App() {
         <Header />
         <Box component="main" sx={{ flexGrow: 1 }}>
           <Routes>
-            <Route path="/" element={<ChatPage />} />
-            <Route path="/rag" element={<RAGPage />} />
+            {/* 来場者向けチャット（公開） */}
+            <Route path="/" element={<VisitorChatPage />} />
+            <Route path="/chat" element={<VisitorChatPage />} />
+            
+            {/* 管理者向け機能（認証必須） */}
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route 
               path="/admin" 
               element={
                 <ProtectedRoute>
-                  <AdminPage />
+                  <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/admin/rag" 
+              element={
+                <ProtectedRoute>
+                  <RAGPage />
                 </ProtectedRoute>
               } 
             />
