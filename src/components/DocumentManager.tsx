@@ -33,7 +33,7 @@ import {
   Search as SearchIcon,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
-import { DocumentUpload } from './DocumentUpload';
+import DocumentUpload from './DocumentUpload';
 
 interface Document {
   id: string;
