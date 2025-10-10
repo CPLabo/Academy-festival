@@ -5,14 +5,12 @@ import {
   TextField,
   Typography,
   LinearProgress,
-  Alert,
   Paper,
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
   IconButton,
-  Chip,
 } from '@mui/material';
 import {
   CloudUpload as UploadIcon,
@@ -87,7 +85,7 @@ const DocumentUpload: React.FC<DocumentUploadProps> = ({
         throw new Error(errorData.detail || 'アップロードに失敗しました');
       }
 
-      const result = await response.json();
+      await response.json();
       setUploadProgress(100);
       
       setTimeout(() => {

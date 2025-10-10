@@ -4,12 +4,6 @@ import {
   Paper,
   Typography,
   Button,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
   IconButton,
   Dialog,
   DialogTitle,
@@ -29,7 +23,6 @@ import {
   Add as AddIcon,
   Edit as EditIcon,
   Delete as DeleteIcon,
-  Upload as UploadIcon,
   Search as SearchIcon,
   Refresh as RefreshIcon,
 } from '@mui/icons-material';
@@ -161,7 +154,7 @@ const DocumentManager: React.FC<DocumentManagerProps> = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Box>
