@@ -41,13 +41,6 @@ const Header: React.FC = () => {
     navigate('/');
   };
 
-  const handleAdminClick = () => {
-    if (isAuthenticated && isAdmin) {
-      navigate('/admin');
-    } else {
-      navigate('/admin/login');
-    }
-  };
 
   return (
     <AppBar position="static" elevation={2}>

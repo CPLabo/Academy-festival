@@ -8,7 +8,6 @@ import {
   Button,
   List,
   ListItem,
-  ListItemText,
   Avatar,
   Divider,
   CircularProgress,
