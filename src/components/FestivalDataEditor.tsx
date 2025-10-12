@@ -93,6 +93,8 @@ const FestivalDataEditor: React.FC = () => {
       const response = await adminService.updateFestivalData(updateData);
       if (response.success) {
         setSuccess('学園祭データを正常に更新しました');
+        // 保存後にデータを再読み込み
+        await loadFestivalData();
       } else {
         setError(response.message);
       }
@@ -117,6 +119,7 @@ const FestivalDataEditor: React.FC = () => {
       delete newSchedule[time];
       return newSchedule;
     });
+    setSuccess(`スケジュール「${time}」を削除しました。保存ボタンを押して変更を確定してください。`);
   };
 
   const addLocationItem = () => {
@@ -133,6 +136,7 @@ const FestivalDataEditor: React.FC = () => {
       delete newLocations[name];
       return newLocations;
     });
+    setSuccess(`場所「${name}」を削除しました。保存ボタンを押して変更を確定してください。`);
   };
 
   const addFoodItem = () => {
@@ -143,7 +147,9 @@ const FestivalDataEditor: React.FC = () => {
   };
 
   const removeFoodItem = (index: number) => {
+    const item = food[index];
     setFood(prev => prev.filter((_, i) => i !== index));
+    setSuccess(`飲食「${item}」を削除しました。保存ボタンを押して変更を確定してください。`);
   };
 
   const addAccessItem = () => {
@@ -160,6 +166,7 @@ const FestivalDataEditor: React.FC = () => {
       delete newAccess[method];
       return newAccess;
     });
+    setSuccess(`アクセス「${method}」を削除しました。保存ボタンを押して変更を確定してください。`);
   };
 
   const addNoteItem = () => {
@@ -170,7 +177,9 @@ const FestivalDataEditor: React.FC = () => {
   };
 
   const removeNoteItem = (index: number) => {
+    const note = notes[index];
     setNotes(prev => prev.filter((_, i) => i !== index));
+    setSuccess(`注意事項「${note}」を削除しました。保存ボタンを押して変更を確定してください。`);
   };
 
   if (loading) {
