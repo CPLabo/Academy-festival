@@ -104,6 +104,30 @@ class AdminService {
       throw new Error('システム設定の更新に失敗しました');
     }
   }
+
+  /**
+   * セッション履歴をCSV形式でダウンロード
+   */
+  async downloadSessionsCSV(): Promise<void> {
+    try {
+      const response = await axios.get(`${this.baseURL}/api/v1/admin/sessions/export/csv`, {
+        responseType: 'blob',
+      });
+      
+      // ダウンロード用のURLを作成
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'session_history.csv');
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('CSVダウンロードエラー:', error);
+      throw new Error('CSVダウンロードに失敗しました');
+    }
+  }
 }
 
 export const adminService = new AdminService();

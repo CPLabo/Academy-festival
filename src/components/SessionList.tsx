@@ -21,7 +21,9 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Snackbar,
 } from '@mui/material';
+import { Download as DownloadIcon } from '@mui/icons-material';
 import { format } from 'date-fns';
 import { ja } from 'date-fns/locale';
 import { adminService } from '../services/adminService';
@@ -32,6 +34,9 @@ const SessionList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [clearDialogOpen, setClearDialogOpen] = useState(false);
+  const [csvDownloading, setCsvDownloading] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   useEffect(() => {
     loadSessions();
@@ -60,6 +65,20 @@ const SessionList: React.FC = () => {
     }
   };
 
+  const handleDownloadCSV = async () => {
+    try {
+      setCsvDownloading(true);
+      await adminService.downloadSessionsCSV();
+      setSnackbarMessage('CSVファイルのダウンロードが開始されました');
+      setSnackbarOpen(true);
+    } catch (err) {
+      setSnackbarMessage(err instanceof Error ? err.message : 'CSVダウンロードに失敗しました');
+      setSnackbarOpen(true);
+    } finally {
+      setCsvDownloading(false);
+    }
+  };
+
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
@@ -80,13 +99,23 @@ const SessionList: React.FC = () => {
     <Box>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
         <Typography variant="h6">チャットセッション一覧</Typography>
-        <Button
-          variant="outlined"
-          color="warning"
-          onClick={() => setClearDialogOpen(true)}
-        >
-          古いセッションをクリア
-        </Button>
+        <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button
+            variant="contained"
+            startIcon={<DownloadIcon />}
+            onClick={handleDownloadCSV}
+            disabled={csvDownloading}
+          >
+            {csvDownloading ? 'ダウンロード中...' : 'CSVダウンロード'}
+          </Button>
+          <Button
+            variant="outlined"
+            color="warning"
+            onClick={() => setClearDialogOpen(true)}
+          >
+            古いセッションをクリア
+          </Button>
+        </Box>
       </Box>
 
       <TableContainer component={Paper}>
@@ -142,6 +171,13 @@ const SessionList: React.FC = () => {
           </Button>
         </DialogActions>
       </Dialog>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={6000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+      />
     </Box>
   );
 };
