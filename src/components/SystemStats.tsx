@@ -23,7 +23,7 @@ import {
   Speed as SpeedIcon,
   Timer as TimerIcon,
   Refresh as RefreshIcon,
-  Gpu as GpuIcon,
+  Memory as GpuIcon,
   Visibility as VisibilityIcon,
 } from '@mui/icons-material';
 import { adminService } from '../services/adminService';
