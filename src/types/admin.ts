@@ -9,6 +9,8 @@ export interface SystemStats {
   uptime: string;
   memory_usage: number;
   cpu_usage: number;
+  gpu_usage?: number[];
+  access_count: number;
 }
 
 export interface ChatSessionInfo {

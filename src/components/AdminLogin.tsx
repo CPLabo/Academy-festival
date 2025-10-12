@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -20,6 +21,7 @@ const AdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -28,7 +30,10 @@ const AdminLogin: React.FC = () => {
 
     try {
       const success = await login(password);
-      if (!success) {
+      if (success) {
+        // ログイン成功時は管理画面にリダイレクト
+        navigate('/admin');
+      } else {
         setError('パスワードが正しくありません。');
       }
     } catch (err) {
