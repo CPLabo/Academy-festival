@@ -223,7 +223,6 @@ class RAGService {
   }
 }
 
-export const ragService = new RAGService();
 
   /**
    * アップロードしたドキュメントをダウンロード
@@ -272,3 +271,4 @@ export const ragService = new RAGService();
       throw error;
     }
   }
+export const ragService = new RAGService();
