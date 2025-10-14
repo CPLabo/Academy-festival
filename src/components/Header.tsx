@@ -60,7 +60,7 @@ const Header: React.FC = () => {
                 icon={<SecurityIcon />} 
                 label="管理者モード" 
                 color="warning" 
-                size="小" 
+                size="small" 
               />
               <Button
                 color="inherit"
