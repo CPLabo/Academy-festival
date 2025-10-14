@@ -4,7 +4,6 @@ import { Box } from '@mui/material';
 import { AuthProvider } from './contexts/AuthContext';
 import VisitorChatPage from './pages/VisitorChatPage';
 import AdminDashboard from './pages/AdminDashboard';
-import RAGPage from './pages/RAGPage';
 import AdminLogin from './components/AdminLogin';
 import ProtectedRoute from './components/ProtectedRoute';
 import Header from './components/Header';

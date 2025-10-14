@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Paper,
@@ -54,7 +54,16 @@ function TabPanel(props: TabPanelProps) {
 }
 
 const AdminDashboard: React.FC = () => {
+  const [searchParams] = useSearchParams();
   const [tabValue, setTabValue] = useState(0);
+
+  // URLパラメータから初期タブを設定
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    if (tabParam === 'rag') {
+      setTabValue(2); // RAG管理タブのインデックス
+    }
+  }, [searchParams]);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 

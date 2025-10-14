@@ -65,7 +65,7 @@ const Header: React.FC = () => {
               <Button
                 color="inherit"
                 startIcon={<RAGIcon />}
-                onClick={() => navigate('/admin/rag')}
+                onClick={() => navigate('/admin?tab=rag')}
                 sx={{
                   backgroundColor: location.pathname === '/admin/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
                 }}
