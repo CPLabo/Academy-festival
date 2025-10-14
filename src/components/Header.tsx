@@ -60,14 +60,15 @@ const Header: React.FC = () => {
                 icon={<SecurityIcon />} 
                 label="管理者モード" 
                 color="warning" 
-                size="small" 
+                size="小" 
+              />
               <Button
                 color="inherit"
                 startIcon={<RAGIcon />}
                 onClick={() => navigate('/admin/rag')}
-                sx={
+                sx={{
                   backgroundColor: location.pathname === '/admin/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
-                }
+                }}
               >
                 RAG管理
               </Button>
