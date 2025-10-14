@@ -1,23 +1,27 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
-  Container,
-  Paper,
   Typography,
   TextField,
   Button,
   List,
   ListItem,
   Avatar,
-  Divider,
   CircularProgress,
   Alert,
   Chip,
+  Paper,
+  Fade,
+  Slide,
+  useTheme,
+  useMediaQuery,
 } from '@mui/material';
 import {
   Send as SendIcon,
   Person as PersonIcon,
   SmartToy as BotIcon,
+  Info as InfoIcon,
+  Help as HelpIcon,
 } from '@mui/icons-material';
 import { ChatMessage } from '../types/chat';
 
@@ -27,6 +31,10 @@ const VisitorChatPage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
+  const [showWelcome, setShowWelcome] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // セッション初期化
   useEffect(() => {
@@ -52,6 +60,11 @@ const VisitorChatPage: React.FC = () => {
     initializeSession();
   }, []);
 
+  // メッセージが追加されたらスクロール
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
   const sendMessage = async () => {
     if (!inputMessage.trim() || !sessionId || isLoading) return;
 
@@ -65,6 +78,7 @@ const VisitorChatPage: React.FC = () => {
     setInputMessage('');
     setIsLoading(true);
     setError(null);
+    setShowWelcome(false);
 
     try {
       const response = await fetch('/api/v1/chat/session/message', {
@@ -103,91 +117,292 @@ const VisitorChatPage: React.FC = () => {
     }
   };
 
+  const handleSampleQuestion = (question: string) => {
+    setInputMessage(question);
+    setShowWelcome(false);
+  };
+
+  const sampleQuestions = [
+    '開催時間は？',
+    '会場はどこ？',
+    '食べ物はある？',
+    'アクセス方法は？',
+    '駐車場はある？',
+    '雨天時はどうなる？',
+    '入場料はかかる？',
+    'おすすめのイベントは？'
+  ];
+
   return (
-    <Container maxWidth="md" sx={{ py: 4 }}>
-      <Paper elevation={3} sx={{ height: '80vh', display: 'flex', flexDirection: 'column' }}>
-        {/* ヘッダー */}
-        <Box sx={{ p: 2, bgcolor: 'primary.main', color: 'white' }}>
-          <Typography variant="h5" component="h1" gutterBottom>
-            学園祭案内チャット
-          </Typography>
-          <Typography variant="body2">
-            学園祭について何でもお聞きください！
+    <Box sx={{ 
+      height: '100vh', 
+      display: 'flex', 
+      flexDirection: 'column',
+      bgcolor: '#f7f7f8',
+      overflow: 'hidden'
+    }}>
+      {/* ヘッダー */}
+      <Box sx={{ 
+        bgcolor: 'white', 
+        borderBottom: '1px solid #e5e5e7',
+        px: { xs: 2, md: 4 },
+        py: 2,
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000
+      }}>
+        <Box sx={{ 
+          maxWidth: '800px', 
+          mx: 'auto',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2
+        }}>
+          <BotIcon sx={{ fontSize: 32, color: '#1976d2' }} />
+          <Box>
+            <Typography variant="h5" sx={{ 
+              fontWeight: 600, 
+              color: '#202123',
+              fontSize: { xs: '1.2rem', md: '1.5rem' }
+            }}>
+              学園祭案内チャット
+            </Typography>
+            <Typography variant="body2" sx={{ color: '#6b7280' }}>
+              学園祭について何でもお聞きください！
+            </Typography>
+          </Box>
+        </Box>
+      </Box>
+
+      {/* 履歴保存の注意 */}
+      <Box sx={{ 
+        bgcolor: '#fef3c7', 
+        borderBottom: '1px solid #fbbf24',
+        px: { xs: 2, md: 4 },
+        py: 1
+      }}>
+        <Box sx={{ 
+          maxWidth: '800px', 
+          mx: 'auto',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1
+        }}>
+          <InfoIcon sx={{ fontSize: 16, color: '#d97706' }} />
+          <Typography variant="caption" sx={{ color: '#92400e' }}>
+            チャット履歴は自動的に保存されます。個人情報は入力しないようご注意ください。
           </Typography>
         </Box>
+      </Box>
 
-        {/* メッセージ表示エリア */}
-        <Box sx={{ flex: 1, overflow: 'auto', p: 2 }}>
-          {messages.length === 0 && (
-            <Box sx={{ textAlign: 'center', py: 4 }}>
-              <BotIcon sx={{ fontSize: 64, color: 'primary.main', mb: 2 }} />
-              <Typography variant="h6" color="text.secondary">
-                学園祭について何でもお聞きください！
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                開催時間、場所、食べ物、イベントなど、お気軽にご質問ください。
-              </Typography>
-            </Box>
+      {/* メッセージ表示エリア */}
+      <Box sx={{ 
+        flex: 1, 
+        overflow: 'auto', 
+        px: { xs: 2, md: 4 },
+        py: 2
+      }}>
+        <Box sx={{ 
+          maxWidth: '800px', 
+          mx: 'auto',
+          minHeight: '100%'
+        }}>
+          {/* ウェルカムメッセージ */}
+          {showWelcome && messages.length === 0 && (
+            <Fade in={showWelcome}>
+              <Box sx={{ 
+                textAlign: 'center', 
+                py: 8,
+                px: 2
+              }}>
+                <BotIcon sx={{ 
+                  fontSize: { xs: 48, md: 64 }, 
+                  color: '#1976d2', 
+                  mb: 3 
+                }} />
+                <Typography variant="h4" sx={{ 
+                  fontWeight: 600,
+                  color: '#202123',
+                  mb: 2,
+                  fontSize: { xs: '1.5rem', md: '2rem' }
+                }}>
+                  学園祭について何でもお聞きください！
+                </Typography>
+                <Typography variant="body1" sx={{ 
+                  color: '#6b7280',
+                  mb: 4,
+                  maxWidth: '600px',
+                  mx: 'auto'
+                }}>
+                  開催時間、場所、食べ物、イベントなど、お気軽にご質問ください。
+                </Typography>
+
+                {/* よくある質問 */}
+                <Box sx={{ mb: 4 }}>
+                  <Typography variant="h6" sx={{ 
+                    mb: 2, 
+                    color: '#374151',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: 1
+                  }}>
+                    <HelpIcon sx={{ fontSize: 20 }} />
+                    よくある質問
+                  </Typography>
+                  <Box sx={{ 
+                    display: 'flex', 
+                    flexWrap: 'wrap', 
+                    gap: 1.5,
+                    justifyContent: 'center',
+                    maxWidth: '600px',
+                    mx: 'auto'
+                  }}>
+                    {sampleQuestions.map((question, index) => (
+                      <Slide 
+                        key={question} 
+                        direction="up" 
+                        in={showWelcome} 
+                        timeout={300 + index * 100}
+                      >
+                        <Chip
+                          label={question}
+                          onClick={() => handleSampleQuestion(question)}
+                          sx={{ 
+                            cursor: 'pointer',
+                            bgcolor: 'white',
+                            border: '1px solid #e5e5e7',
+                            '&:hover': {
+                              bgcolor: '#f3f4f6',
+                              borderColor: '#d1d5db'
+                            }
+                          }}
+                        />
+                      </Slide>
+                    ))}
+                  </Box>
+                </Box>
+              </Box>
+            </Fade>
           )}
 
-          <List>
+          {/* メッセージリスト */}
+          <List sx={{ py: 0 }}>
             {messages.map((message, index) => (
-              <React.Fragment key={index}>
-                <ListItem sx={{ 
+              <ListItem 
+                key={index}
+                sx={{ 
                   flexDirection: message.role === 'user' ? 'row-reverse' : 'row',
                   alignItems: 'flex-start',
-                  mb: 1
+                  mb: 2,
+                  px: 0
+                }}
+              >
+                <Avatar sx={{ 
+                  bgcolor: message.role === 'user' ? '#1976d2' : '#6b7280',
+                  mx: 1,
+                  width: { xs: 32, md: 40 },
+                  height: { xs: 32, md: 40 }
                 }}>
-                  <Avatar sx={{ 
-                    bgcolor: message.role === 'user' ? 'primary.main' : 'secondary.main',
-                    mx: 1
-                  }}>
-                    {message.role === 'user' ? <PersonIcon /> : <BotIcon />}
-                  </Avatar>
-                  <Box sx={{ 
-                    maxWidth: '70%',
-                    bgcolor: message.role === 'user' ? 'primary.light' : 'grey.100',
-                    color: message.role === 'user' ? 'white' : 'text.primary',
+                  {message.role === 'user' ? <PersonIcon /> : <BotIcon />}
+                </Avatar>
+                <Paper
+                  elevation={0}
+                  sx={{ 
+                    maxWidth: { xs: '75%', md: '70%' },
+                    bgcolor: message.role === 'user' ? '#1976d2' : 'white',
+                    color: message.role === 'user' ? 'white' : '#374151',
                     p: 2,
                     borderRadius: 2,
-                    wordBreak: 'break-word'
+                    wordBreak: 'break-word',
+                    border: message.role === 'assistant' ? '1px solid #e5e5e7' : 'none'
+                  }}
+                >
+                  <Typography variant="body1" sx={{ 
+                    whiteSpace: 'pre-wrap',
+                    lineHeight: 1.6
                   }}>
-                    <Typography variant="body1" sx={{ whiteSpace: 'pre-wrap' }}>
-                      {message.content}
-                    </Typography>
-                    <Typography variant="caption" sx={{ 
-                      display: 'block', 
-                      mt: 1, 
-                      opacity: 0.7 
-                    }}>
-                      {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : 'now'}
-                    </Typography>
-                  </Box>
-                </ListItem>
-                {index < messages.length - 1 && <Divider />}
-              </React.Fragment>
+                    {message.content}
+                  </Typography>
+                  <Typography variant="caption" sx={{ 
+                    display: 'block', 
+                    mt: 1, 
+                    opacity: 0.7,
+                    fontSize: '0.75rem'
+                  }}>
+                    {message.timestamp ? new Date(message.timestamp).toLocaleTimeString() : 'now'}
+                  </Typography>
+                </Paper>
+              </ListItem>
             ))}
           </List>
 
+          {/* ローディング表示 */}
           {isLoading && (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 2 }}>
-              <CircularProgress size={24} />
-              <Typography variant="body2" sx={{ ml: 2 }}>
-                応答を生成中...
-              </Typography>
+            <Box sx={{ 
+              display: 'flex', 
+              alignItems: 'center',
+              gap: 1,
+              mb: 2,
+              px: 0
+            }}>
+              <Avatar sx={{ 
+                bgcolor: '#6b7280',
+                mx: 1,
+                width: { xs: 32, md: 40 },
+                height: { xs: 32, md: 40 }
+              }}>
+                <BotIcon />
+              </Avatar>
+              <Paper
+                elevation={0}
+                sx={{ 
+                  bgcolor: 'white',
+                  p: 2,
+                  borderRadius: 2,
+                  border: '1px solid #e5e5e7',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 1
+                }}
+              >
+                <CircularProgress size={16} />
+                <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                  応答を生成中...
+                </Typography>
+              </Paper>
             </Box>
           )}
 
+          {/* エラー表示 */}
           {error && (
-            <Alert severity="error" sx={{ mt: 2 }}>
+            <Alert severity="error" sx={{ mb: 2 }}>
               {error}
             </Alert>
           )}
-        </Box>
 
-        {/* 入力エリア */}
-        <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
-          <Box sx={{ display: 'flex', gap: 1 }}>
+          <div ref={messagesEndRef} />
+        </Box>
+      </Box>
+
+      {/* 入力エリア - 下部固定 */}
+      <Box sx={{ 
+        bgcolor: 'white',
+        borderTop: '1px solid #e5e5e7',
+        px: { xs: 2, md: 4 },
+        py: 2,
+        position: 'sticky',
+        bottom: 0
+      }}>
+        <Box sx={{ 
+          maxWidth: '800px', 
+          mx: 'auto'
+        }}>
+          <Box sx={{ 
+            display: 'flex', 
+            gap: 1,
+            alignItems: 'flex-end'
+          }}>
             <TextField
               fullWidth
               multiline
@@ -199,42 +414,42 @@ const VisitorChatPage: React.FC = () => {
               disabled={isLoading}
               variant="outlined"
               size="small"
+              sx={{
+                '& .MuiOutlinedInput-root': {
+                  borderRadius: 3,
+                  bgcolor: '#f9fafb',
+                  '&:hover': {
+                    bgcolor: '#f3f4f6'
+                  },
+                  '&.Mui-focused': {
+                    bgcolor: 'white'
+                  }
+                }
+              }}
             />
             <Button
               variant="contained"
               onClick={sendMessage}
               disabled={!inputMessage.trim() || isLoading}
-              sx={{ minWidth: 100 }}
+              sx={{ 
+                minWidth: 48,
+                height: 40,
+                borderRadius: 3,
+                bgcolor: '#1976d2',
+                '&:hover': {
+                  bgcolor: '#1565c0'
+                },
+                '&:disabled': {
+                  bgcolor: '#d1d5db'
+                }
+              }}
             >
               <SendIcon />
             </Button>
           </Box>
-          
-          {/* サンプル質問 */}
-          <Box sx={{ mt: 2 }}>
-            <Typography variant="caption" color="text.secondary" sx={{ mb: 1, display: 'block' }}>
-              よくある質問:
-            </Typography>
-            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-              {[
-                '開催時間は？',
-                '会場はどこ？',
-                '食べ物はある？',
-                'アクセス方法は？'
-              ].map((question) => (
-                <Chip
-                  key={question}
-                  label={question}
-                  size="small"
-                  onClick={() => setInputMessage(question)}
-                  sx={{ cursor: 'pointer' }}
-                />
-              ))}
-            </Box>
-          </Box>
         </Box>
-      </Paper>
-    </Container>
+      </Box>
+    </Box>
   );
 };
 

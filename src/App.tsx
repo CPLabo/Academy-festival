@@ -13,36 +13,43 @@ function App() {
   return (
     <AuthProvider>
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Header />
-        <Box component="main" sx={{ flexGrow: 1 }}>
-          <Routes>
-            {/* 来場者向けチャット（公開） */}
-            <Route path="/" element={<VisitorChatPage />} />
-            <Route path="/chat" element={<VisitorChatPage />} />
-            
-            {/* 管理者向け機能（認証必須・隠しURL） */}
-            <Route path="/admin/login" element={<AdminLogin />} />
-            <Route 
-              path="/admin" 
-              element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/admin/rag" 
-              element={
-                <ProtectedRoute>
-                  <RAGPage />
-                </ProtectedRoute>
-              } 
-            />
-            
-            {/* その他のURLは来場者向けチャットにリダイレクト */}
-            <Route path="*" element={<VisitorChatPage />} />
-          </Routes>
-        </Box>
+        <Routes>
+          {/* 来場者向けチャット（公開） - ヘッダーなし */}
+          <Route path="/" element={<VisitorChatPage />} />
+          <Route path="/chat" element={<VisitorChatPage />} />
+          
+          {/* 管理者向け機能（認証必須・隠しURL） - ヘッダーあり */}
+          <Route path="/admin/login" element={<AdminLogin />} />
+          <Route 
+            path="/admin" 
+            element={
+              <>
+                <Header />
+                <Box component="main" sx={{ flexGrow: 1 }}>
+                  <ProtectedRoute>
+                    <AdminDashboard />
+                  </ProtectedRoute>
+                </Box>
+              </>
+            } 
+          />
+          <Route 
+            path="/admin/rag" 
+            element={
+              <>
+                <Header />
+                <Box component="main" sx={{ flexGrow: 1 }}>
+                  <ProtectedRoute>
+                    <RAGPage />
+                  </ProtectedRoute>
+                </Box>
+              </>
+            } 
+          />
+          
+          {/* その他のURLは来場者向けチャットにリダイレクト */}
+          <Route path="*" element={<VisitorChatPage />} />
+        </Routes>
       </Box>
     </AuthProvider>
   );

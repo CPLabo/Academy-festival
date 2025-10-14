@@ -19,13 +19,19 @@ import {
   Dialog,
   DialogTitle,
   DialogContent,
-  DialogActions
+  DialogActions,
+  useTheme,
+  useMediaQuery,
+  Fade,
+  Slide,
 } from '@mui/material';
 import {
   Upload as UploadIcon,
   Search as SearchIcon,
   FileUpload as FileUploadIcon,
-  Info as InfoIcon
+  Info as InfoIcon,
+  Psychology as PsychologyIcon,
+  Storage as StorageIcon,
 } from '@mui/icons-material';
 import { ragService } from '../services/ragService';
 
@@ -60,6 +66,8 @@ const RAGPage: React.FC<RAGPageProps> = ({ onQuery }) => {
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFiles(event.target.files);
@@ -170,255 +178,509 @@ const RAGPage: React.FC<RAGPageProps> = ({ onQuery }) => {
   }, []);
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        RAG機能管理
-      </Typography>
-      
-      {error && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {error}
-        </Alert>
-      )}
-
-      {uploadSuccess && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          ファイルのアップロードが完了しました
-        </Alert>
-      )}
-
-      <Grid container spacing={3}>
-        {/* ファイルアップロード */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              <FileUploadIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-              ドキュメントアップロード
+    <Box sx={{ 
+      minHeight: '100vh',
+      bgcolor: '#f7f7f8',
+      display: 'flex',
+      flexDirection: 'column'
+    }}>
+      {/* ヘッダー */}
+      <Box sx={{ 
+        bgcolor: 'white', 
+        borderBottom: '1px solid #e5e5e7',
+        px: { xs: 2, md: 4 },
+        py: 3,
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000
+      }}>
+        <Box sx={{ 
+          maxWidth: '1200px', 
+          mx: 'auto',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 2
+        }}>
+          <PsychologyIcon sx={{ fontSize: 32, color: '#1976d2' }} />
+          <Box>
+            <Typography variant="h4" sx={{ 
+              fontWeight: 600, 
+              color: '#202123',
+              fontSize: { xs: '1.5rem', md: '2rem' }
+            }}>
+              RAG機能管理
             </Typography>
-            
-            <Box sx={{ mb: 2 }}>
-              <input
-                ref={fileInputRef}
-                type="file"
-                multiple
-                accept=".txt,.md,.pdf,.doc,.docx"
-                onChange={handleFileSelect}
-                style={{ display: 'none' }}
-              />
-              <Button
-                variant="outlined"
-                startIcon={<UploadIcon />}
-                onClick={() => fileInputRef.current?.click()}
-                sx={{ mr: 2 }}
-              >
-                ファイルを選択
-              </Button>
-              {files && (
-                <Typography variant="body2" color="text.secondary">
-                  {files.length}個のファイルが選択されています
-                </Typography>
-              )}
-            </Box>
-
-            {files && (
-              <Box sx={{ mb: 2 }}>
-                <Typography variant="subtitle2">選択されたファイル:</Typography>
-                <List dense>
-                  {Array.from(files).map((file, index) => (
-                    <ListItem key={index}>
-                      <ListItemText
-                        primary={file.name}
-                        secondary={`${(file.size / 1024).toFixed(1)} KB`}
-                      />
-                    </ListItem>
-                  ))}
-                </List>
-              </Box>
-            )}
-
-            <Button
-              variant="contained"
-              onClick={handleUpload}
-              disabled={!files || uploading}
-              startIcon={uploading ? <CircularProgress size={20} /> : <UploadIcon />}
-            >
-              {uploading ? 'アップロード中...' : 'アップロード'}
-            </Button>
-          </Paper>
-        </Grid>
-
-        {/* コレクション情報 */}
-        <Grid item xs={12} md={6}>
-          <Paper sx={{ p: 3 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-              <Typography variant="h6">
-                コレクション情報
-              </Typography>
-              <IconButton onClick={() => setInfoDialogOpen(true)}>
-                <InfoIcon />
-              </IconButton>
-            </Box>
-            
-            {collectionInfo ? (
-              <Box>
-                <Typography variant="body1">
-                  ドキュメント数: <Chip label={collectionInfo.document_count} color="primary" />
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  モデル: {collectionInfo.model_name}
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  コレクション: {collectionInfo.collection_name}
-                </Typography>
-              </Box>
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                情報を読み込み中...
-              </Typography>
-            )}
-          </Paper>
-        </Grid>
-
-        {/* ドキュメント検索 */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              <SearchIcon sx={{ mr: 1, verticalAlign: 'middle' }} />
-              ドキュメント検索
+            <Typography variant="body1" sx={{ color: '#6b7280' }}>
+              ドキュメントのアップロード、検索、RAG機能の管理を行います
             </Typography>
-            
-            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-              <TextField
-                fullWidth
-                label="検索クエリ"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
-              />
-              <Button
-                variant="contained"
-                onClick={handleSearch}
-                disabled={searching}
-                startIcon={searching ? <CircularProgress size={20} /> : <SearchIcon />}
-              >
-                {searching ? '検索中...' : '検索'}
-              </Button>
-            </Box>
+          </Box>
+        </Box>
+      </Box>
 
-            {searchResults.length > 0 && (
-              <Box>
-                <Typography variant="subtitle1" gutterBottom>
-                  検索結果 ({searchResults.length}件)
-                </Typography>
-                {searchResults.map((doc, index) => (
-                  <Card key={index} sx={{ mb: 2 }}>
-                    <CardContent>
-                      <Typography variant="body2" color="text.secondary" gutterBottom>
-                        {doc.metadata.source} - {doc.metadata.title}
+      {/* メインコンテンツ */}
+      <Box sx={{ 
+        flex: 1,
+        px: { xs: 2, md: 4 },
+        py: 3
+      }}>
+        <Box sx={{ 
+          maxWidth: '1200px', 
+          mx: 'auto'
+        }}>
+          {error && (
+            <Fade in={!!error}>
+              <Alert severity="error" sx={{ mb: 3, borderRadius: 2 }}>
+                {error}
+              </Alert>
+            </Fade>
+          )}
+
+          {uploadSuccess && (
+            <Fade in={uploadSuccess}>
+              <Alert severity="success" sx={{ mb: 3, borderRadius: 2 }}>
+                ファイルのアップロードが完了しました
+              </Alert>
+            </Fade>
+          )}
+
+          <Grid container spacing={3}>
+            {/* ファイルアップロード */}
+            <Grid item xs={12} md={6}>
+              <Slide direction="up" in timeout={300}>
+                <Paper 
+                  elevation={0}
+                  sx={{ 
+                    p: 3,
+                    borderRadius: 3,
+                    border: '1px solid #e5e5e7',
+                    height: '100%'
+                  }}
+                >
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: 600,
+                    color: '#202123',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}>
+                    <FileUploadIcon sx={{ color: '#1976d2' }} />
+                    ドキュメントアップロード
+                  </Typography>
+                  
+                  <Box sx={{ mb: 2 }}>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept=".txt,.md,.pdf,.doc,.docx"
+                      onChange={handleFileSelect}
+                      style={{ display: 'none' }}
+                    />
+                    <Button
+                      variant="outlined"
+                      startIcon={<UploadIcon />}
+                      onClick={() => fileInputRef.current?.click()}
+                      sx={{ 
+                        mr: 2,
+                        borderRadius: 2,
+                        borderColor: '#1976d2',
+                        color: '#1976d2',
+                        '&:hover': {
+                          borderColor: '#1565c0',
+                          bgcolor: 'rgba(25, 118, 210, 0.04)'
+                        }
+                      }}
+                    >
+                      ファイルを選択
+                    </Button>
+                    {files && (
+                      <Typography variant="body2" sx={{ color: '#6b7280', mt: 1 }}>
+                        {files.length}個のファイルが選択されています
                       </Typography>
-                      <Typography variant="body1">
-                        {doc.text.substring(0, 200)}...
+                    )}
+                  </Box>
+
+                  {files && (
+                    <Box sx={{ mb: 2 }}>
+                      <Typography variant="subtitle2" sx={{ color: '#374151', mb: 1 }}>
+                        選択されたファイル:
                       </Typography>
-                      {doc.distance && (
-                        <Chip
-                          label={`類似度: ${(1 - doc.distance).toFixed(3)}`}
-                          size="small"
-                          color="secondary"
-                          sx={{ mt: 1 }}
+                      <List dense>
+                        {Array.from(files).map((file, index) => (
+                          <ListItem key={index} sx={{ px: 0 }}>
+                            <ListItemText
+                              primary={file.name}
+                              secondary={`${(file.size / 1024).toFixed(1)} KB`}
+                              primaryTypographyProps={{ fontSize: '0.875rem' }}
+                              secondaryTypographyProps={{ fontSize: '0.75rem' }}
+                            />
+                          </ListItem>
+                        ))}
+                      </List>
+                    </Box>
+                  )}
+
+                  <Button
+                    variant="contained"
+                    onClick={handleUpload}
+                    disabled={!files || uploading}
+                    startIcon={uploading ? <CircularProgress size={20} /> : <UploadIcon />}
+                    sx={{
+                      borderRadius: 2,
+                      bgcolor: '#1976d2',
+                      '&:hover': {
+                        bgcolor: '#1565c0'
+                      },
+                      '&:disabled': {
+                        bgcolor: '#d1d5db'
+                      }
+                    }}
+                  >
+                    {uploading ? 'アップロード中...' : 'アップロード'}
+                  </Button>
+                </Paper>
+              </Slide>
+            </Grid>
+
+            {/* コレクション情報 */}
+            <Grid item xs={12} md={6}>
+              <Slide direction="up" in timeout={500}>
+                <Paper 
+                  elevation={0}
+                  sx={{ 
+                    p: 3,
+                    borderRadius: 3,
+                    border: '1px solid #e5e5e7',
+                    height: '100%'
+                  }}
+                >
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                    <Typography variant="h6" sx={{ 
+                      fontWeight: 600,
+                      color: '#202123',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 1
+                    }}>
+                      <StorageIcon sx={{ color: '#1976d2' }} />
+                      コレクション情報
+                    </Typography>
+                    <IconButton 
+                      onClick={() => setInfoDialogOpen(true)}
+                      sx={{ ml: 'auto' }}
+                    >
+                      <InfoIcon sx={{ color: '#6b7280' }} />
+                    </IconButton>
+                  </Box>
+                  
+                  {collectionInfo ? (
+                    <Box>
+                      <Typography variant="body1" sx={{ mb: 1 }}>
+                        ドキュメント数: <Chip 
+                          label={collectionInfo.document_count} 
+                          sx={{ 
+                            bgcolor: '#1976d2',
+                            color: 'white',
+                            fontWeight: 500
+                          }} 
                         />
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
-              </Box>
-            )}
-          </Paper>
-        </Grid>
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#6b7280', mb: 0.5 }}>
+                        モデル: {collectionInfo.model_name}
+                      </Typography>
+                      <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                        コレクション: {collectionInfo.collection_name}
+                      </Typography>
+                    </Box>
+                  ) : (
+                    <Typography variant="body2" sx={{ color: '#6b7280' }}>
+                      情報を読み込み中...
+                    </Typography>
+                  )}
+                </Paper>
+              </Slide>
+            </Grid>
 
-        {/* RAGクエリ */}
-        <Grid item xs={12}>
-          <Paper sx={{ p: 3 }}>
-            <Typography variant="h6" gutterBottom>
-              RAGクエリ
-            </Typography>
-            
-            <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
-              <TextField
-                fullWidth
-                label="RAGクエリ"
-                multiline
-                rows={3}
-                value={ragQuery}
-                onChange={(e) => setRagQuery(e.target.value)}
-              />
-              <Button
-                variant="contained"
-                onClick={handleRAGQuery}
-                disabled={ragProcessing}
-                startIcon={ragProcessing ? <CircularProgress size={20} /> : <SearchIcon />}
-              >
-                {ragProcessing ? '処理中...' : 'RAG実行'}
-              </Button>
-            </Box>
+            {/* ドキュメント検索 */}
+            <Grid item xs={12}>
+              <Slide direction="up" in timeout={700}>
+                <Paper 
+                  elevation={0}
+                  sx={{ 
+                    p: 3,
+                    borderRadius: 3,
+                    border: '1px solid #e5e5e7'
+                  }}
+                >
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: 600,
+                    color: '#202123',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}>
+                    <SearchIcon sx={{ color: '#1976d2' }} />
+                    ドキュメント検索
+                  </Typography>
+                  
+                  <Box sx={{ display: 'flex', gap: 2, mb: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+                    <TextField
+                      fullWidth
+                      label="検索クエリ"
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleSearch()}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 2,
+                          bgcolor: '#f9fafb',
+                          '&:hover': {
+                            bgcolor: '#f3f4f6'
+                          },
+                          '&.Mui-focused': {
+                            bgcolor: 'white'
+                          }
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={handleSearch}
+                      disabled={searching}
+                      startIcon={searching ? <CircularProgress size={20} /> : <SearchIcon />}
+                      sx={{
+                        borderRadius: 2,
+                        bgcolor: '#1976d2',
+                        '&:hover': {
+                          bgcolor: '#1565c0'
+                        },
+                        minWidth: { xs: '100%', md: 120 }
+                      }}
+                    >
+                      {searching ? '検索中...' : '検索'}
+                    </Button>
+                  </Box>
 
-            {ragResults && (
-              <Box>
-                <Typography variant="subtitle1" gutterBottom>
-                  RAG結果
-                </Typography>
-                <Card>
-                  <CardContent>
-                    <Typography variant="body2" color="text.secondary" gutterBottom>
-                      コンテキスト長: {ragResults.context_length}文字
-                    </Typography>
-                    <Typography variant="body1" sx={{ mb: 2 }}>
-                      {ragResults.context.substring(0, 500)}...
-                    </Typography>
-                    <Divider sx={{ my: 2 }} />
-                    <Typography variant="subtitle2" gutterBottom>
-                      関連ドキュメント:
-                    </Typography>
-                    {ragResults.relevant_documents.map((doc: Document, index: number) => (
-                      <Chip
-                        key={index}
-                        label={`${doc.metadata.title} (類似度: ${((1 - (doc.distance || 0)) * 100).toFixed(1)}%)`}
-                        size="small"
-                        sx={{ mr: 1, mb: 1 }}
-                      />
-                    ))}
-                  </CardContent>
-                </Card>
-              </Box>
-            )}
-          </Paper>
-        </Grid>
-      </Grid>
+                  {searchResults.length > 0 && (
+                    <Fade in={searchResults.length > 0}>
+                      <Box>
+                        <Typography variant="subtitle1" sx={{ 
+                          fontWeight: 600,
+                          color: '#374151',
+                          mb: 2
+                        }}>
+                          検索結果 ({searchResults.length}件)
+                        </Typography>
+                        {searchResults.map((doc, index) => (
+                          <Card 
+                            key={index} 
+                            sx={{ 
+                              mb: 2,
+                              borderRadius: 2,
+                              border: '1px solid #e5e5e7',
+                              '&:hover': {
+                                boxShadow: 2
+                              }
+                            }}
+                          >
+                            <CardContent>
+                              <Typography variant="body2" sx={{ color: '#6b7280', mb: 1 }}>
+                                {doc.metadata.source} - {doc.metadata.title}
+                              </Typography>
+                              <Typography variant="body1" sx={{ mb: 1, lineHeight: 1.6 }}>
+                                {doc.text.substring(0, 200)}...
+                              </Typography>
+                              {doc.distance && (
+                                <Chip
+                                  label={`類似度: ${(1 - doc.distance).toFixed(3)}`}
+                                  size="small"
+                                  sx={{ 
+                                    bgcolor: '#e3f2fd',
+                                    color: '#1976d2',
+                                    fontWeight: 500
+                                  }}
+                                />
+                              )}
+                            </CardContent>
+                          </Card>
+                        ))}
+                      </Box>
+                    </Fade>
+                  )}
+                </Paper>
+              </Slide>
+            </Grid>
+
+            {/* RAGクエリ */}
+            <Grid item xs={12}>
+              <Slide direction="up" in timeout={900}>
+                <Paper 
+                  elevation={0}
+                  sx={{ 
+                    p: 3,
+                    borderRadius: 3,
+                    border: '1px solid #e5e5e7'
+                  }}
+                >
+                  <Typography variant="h6" sx={{ 
+                    fontWeight: 600,
+                    color: '#202123',
+                    mb: 2,
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1
+                  }}>
+                    <PsychologyIcon sx={{ color: '#1976d2' }} />
+                    RAGクエリ
+                  </Typography>
+                  
+                  <Box sx={{ display: 'flex', gap: 2, mb: 2, flexDirection: { xs: 'column', md: 'row' } }}>
+                    <TextField
+                      fullWidth
+                      label="RAGクエリ"
+                      multiline
+                      rows={3}
+                      value={ragQuery}
+                      onChange={(e) => setRagQuery(e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 2,
+                          bgcolor: '#f9fafb',
+                          '&:hover': {
+                            bgcolor: '#f3f4f6'
+                          },
+                          '&.Mui-focused': {
+                            bgcolor: 'white'
+                          }
+                        }
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={handleRAGQuery}
+                      disabled={ragProcessing}
+                      startIcon={ragProcessing ? <CircularProgress size={20} /> : <SearchIcon />}
+                      sx={{
+                        borderRadius: 2,
+                        bgcolor: '#1976d2',
+                        '&:hover': {
+                          bgcolor: '#1565c0'
+                        },
+                        minWidth: { xs: '100%', md: 120 }
+                      }}
+                    >
+                      {ragProcessing ? '処理中...' : 'RAG実行'}
+                    </Button>
+                  </Box>
+
+                  {ragResults && (
+                    <Fade in={!!ragResults}>
+                      <Box>
+                        <Typography variant="subtitle1" sx={{ 
+                          fontWeight: 600,
+                          color: '#374151',
+                          mb: 2
+                        }}>
+                          RAG結果
+                        </Typography>
+                        <Card sx={{ 
+                          borderRadius: 2,
+                          border: '1px solid #e5e5e7'
+                        }}>
+                          <CardContent>
+                            <Typography variant="body2" sx={{ color: '#6b7280', mb: 2 }}>
+                              コンテキスト長: {ragResults.context_length}文字
+                            </Typography>
+                            <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.6 }}>
+                              {ragResults.context.substring(0, 500)}...
+                            </Typography>
+                            <Divider sx={{ my: 2 }} />
+                            <Typography variant="subtitle2" sx={{ 
+                              fontWeight: 600,
+                              color: '#374151',
+                              mb: 1
+                            }}>
+                              関連ドキュメント:
+                            </Typography>
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
+                              {ragResults.relevant_documents.map((doc: Document, index: number) => (
+                                <Chip
+                                  key={index}
+                                  label={`${doc.metadata.title} (類似度: ${((1 - (doc.distance || 0)) * 100).toFixed(1)}%)`}
+                                  size="small"
+                                  sx={{ 
+                                    bgcolor: '#e3f2fd',
+                                    color: '#1976d2',
+                                    fontWeight: 500
+                                  }}
+                                />
+                              ))}
+                            </Box>
+                          </CardContent>
+                        </Card>
+                      </Box>
+                    </Fade>
+                  )}
+                </Paper>
+              </Slide>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
 
       {/* 情報ダイアログ */}
-      <Dialog open={infoDialogOpen} onClose={() => setInfoDialogOpen(false)}>
-        <DialogTitle>RAG機能について</DialogTitle>
+      <Dialog 
+        open={infoDialogOpen} 
+        onClose={() => setInfoDialogOpen(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle sx={{ 
+          fontWeight: 600,
+          color: '#202123',
+          display: 'flex',
+          alignItems: 'center',
+          gap: 1
+        }}>
+          <InfoIcon sx={{ color: '#1976d2' }} />
+          RAG機能について
+        </DialogTitle>
         <DialogContent>
-          <Typography variant="body1" paragraph>
+          <Typography variant="body1" sx={{ mb: 2, lineHeight: 1.6 }}>
             RAG（Retrieval-Augmented Generation）機能により、アップロードしたドキュメントを基にした
             高精度な回答生成が可能になります。
           </Typography>
-          <Typography variant="body1" paragraph>
-            <strong>主な機能:</strong>
+          <Typography variant="body1" sx={{ mb: 1, fontWeight: 600 }}>
+            主な機能:
           </Typography>
           <List dense>
-            <ListItem>
+            <ListItem sx={{ px: 0 }}>
               <ListItemText primary="• ドキュメントのアップロードとベクトル化" />
             </ListItem>
-            <ListItem>
+            <ListItem sx={{ px: 0 }}>
               <ListItemText primary="• 類似ドキュメントの検索" />
             </ListItem>
-            <ListItem>
+            <ListItem sx={{ px: 0 }}>
               <ListItemText primary="• コンテキストを考慮した回答生成" />
             </ListItem>
           </List>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setInfoDialogOpen(false)}>閉じる</Button>
+          <Button 
+            onClick={() => setInfoDialogOpen(false)}
+            sx={{
+              borderRadius: 2,
+              bgcolor: '#1976d2',
+              color: 'white',
+              '&:hover': {
+                bgcolor: '#1565c0'
+              }
+            }}
+          >
+            閉じる
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
