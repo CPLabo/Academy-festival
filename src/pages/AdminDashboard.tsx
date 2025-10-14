@@ -5,7 +5,6 @@ import {
   Typography,
   Tabs,
   Tab,
-  Alert,
   useTheme,
   useMediaQuery,
   Fade,

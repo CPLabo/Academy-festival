@@ -34,7 +34,6 @@ const VisitorChatPage: React.FC = () => {
   const [showWelcome, setShowWelcome] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // セッション初期化
   useEffect(() => {

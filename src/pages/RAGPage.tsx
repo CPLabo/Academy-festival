@@ -67,7 +67,6 @@ const RAGPage: React.FC<RAGPageProps> = ({ onQuery }) => {
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFiles(event.target.files);
