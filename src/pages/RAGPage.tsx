@@ -20,8 +20,6 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
-  useTheme,
-  useMediaQuery,
   Fade,
   Slide,
 } from '@mui/material';
@@ -66,7 +64,6 @@ const RAGPage: React.FC<RAGPageProps> = ({ onQuery }) => {
   const [infoDialogOpen, setInfoDialogOpen] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const theme = useTheme();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFiles(event.target.files);

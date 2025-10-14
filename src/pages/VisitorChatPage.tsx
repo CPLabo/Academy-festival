@@ -13,8 +13,6 @@ import {
   Paper,
   Fade,
   Slide,
-  useTheme,
-  useMediaQuery,
 } from '@mui/material';
 import {
   Send as SendIcon,
@@ -33,7 +31,6 @@ const VisitorChatPage: React.FC = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const theme = useTheme();
 
   // セッション初期化
   useEffect(() => {
