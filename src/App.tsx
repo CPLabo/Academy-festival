@@ -32,19 +32,6 @@ function App() {
               </>
             } 
           />
-          <Route 
-            path="/admin/rag" 
-            element={
-              <>
-                <Header />
-                <Box component="main" sx={{ flexGrow: 1 }}>
-                  <ProtectedRoute>
-                    <RAGPage />
-                  </ProtectedRoute>
-                </Box>
-              </>
-            } 
-          />
           
           {/* その他のURLは来場者向けチャットにリダイレクト */}
           <Route path="*" element={<VisitorChatPage />} />
