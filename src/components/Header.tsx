@@ -67,12 +67,6 @@ const Header: React.FC = () => {
                 startIcon={<ChatIcon />}
                 onClick={() => navigate('/')}
               >
-                来場者画面
-              </Button>
-              <Button
-                color="inherit"
-                startIcon={<RAGIcon />}
-                onClick={() => navigate('/admin/rag')}
                 sx={{
                   backgroundColor: location.pathname === '/admin/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
                 }}

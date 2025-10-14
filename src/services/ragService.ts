@@ -224,3 +224,51 @@ class RAGService {
 }
 
 export const ragService = new RAGService();
+
+  /**
+   * アップロードしたドキュメントをダウンロード
+   */
+  async downloadDocument(documentId: string, filename: string): Promise<void> {
+    try {
+      const response = await fetch(`${this.baseUrl}/documents/${documentId}/download`, {
+        method: 'GET',
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      // ダウンロード用のURLを作成
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error('Download error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * アップロードしたドキュメント一覧を取得
+   */
+  async getUploadedDocuments(): Promise<{ success: boolean; documents: Array<{ id: string; filename: string; size: number; uploaded_at: string; }> }> {
+    try {
+      const response = await fetch(`${this.baseUrl}/documents/list`);
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Get documents error:', error);
+      throw error;
+    }
+  }

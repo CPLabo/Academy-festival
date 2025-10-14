@@ -154,7 +154,6 @@ const VisitorChatPage: React.FC = () => {
           alignItems: 'center',
           gap: 2
         }}>
-          <BotIcon sx={{ fontSize: 32, color: '#1976d2' }} />
           <Box>
             <Typography variant="h5" sx={{ 
               fontWeight: 600, 
