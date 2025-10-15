@@ -30,6 +30,7 @@ const VisitorChatPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showDisclaimer, setShowDisclaimer] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   // セッション初期化
@@ -170,25 +171,41 @@ const VisitorChatPage: React.FC = () => {
       </Box>
 
       {/* 履歴保存の注意 */}
-      <Box sx={{ 
-        bgcolor: '#fef3c7', 
-        borderBottom: '1px solid #fbbf24',
-        px: { xs: 2, md: 4 },
-        py: 1
-      }}>
+      {showDisclaimer && (
         <Box sx={{ 
-          maxWidth: '800px', 
-          mx: 'auto',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1
+          bgcolor: '#fef3c7', 
+          borderBottom: '1px solid #fbbf24',
+          px: { xs: 2, md: 4 },
+          py: 1
         }}>
-          <InfoIcon sx={{ fontSize: 16, color: '#d97706' }} />
-          <Typography variant="caption" sx={{ color: '#92400e' }}>
-            チャット履歴は自動的に保存されます。個人情報は入力しないようご注意ください。
-          </Typography>
+          <Box sx={{ 
+            maxWidth: '800px', 
+            mx: 'auto',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1
+          }}>
+            <InfoIcon sx={{ fontSize: 16, color: '#d97706' }} />
+            <Typography variant="caption" sx={{ color: '#92400e', flex: 1 }}>
+              チャット履歴は自動的に保存されます。個人情報は入力しないようご注意ください。
+            </Typography>
+            <Button
+              size="small"
+              onClick={() => setShowDisclaimer(false)}
+              sx={{
+                minWidth: 'auto',
+                p: 0.5,
+                color: '#92400e',
+                '&:hover': {
+                  bgcolor: 'rgba(146, 64, 14, 0.1)'
+                }
+              }}
+            >
+              ×
+            </Button>
+          </Box>
         </Box>
-      </Box>
+      )}
 
       {/* メッセージ表示エリア */}
       <Box sx={{ 
@@ -210,11 +227,6 @@ const VisitorChatPage: React.FC = () => {
                 py: 8,
                 px: 2
               }}>
-                <BotIcon sx={{ 
-                  fontSize: { xs: 48, md: 64 }, 
-                  color: '#1976d2', 
-                  mb: 3 
-                }} />
                 <Typography variant="h4" sx={{ 
                   fontWeight: 600,
                   color: '#202123',

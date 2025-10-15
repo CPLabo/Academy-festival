@@ -15,7 +15,6 @@ import {
   AdminPanelSettings as AdminIcon,
   Logout as LogoutIcon,
   AccountCircle as AccountIcon,
-  Storage as RAGIcon,
   Security as SecurityIcon,
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -42,7 +41,7 @@ const Header: React.FC = () => {
   };
 
   return (
-    <AppBar position="static" elevation={2}>
+    <AppBar position="static" elevation={2} sx={{ bgcolor: '#1976d2' }}>
       <Toolbar>
         <Typography
           variant="h6"
@@ -62,16 +61,6 @@ const Header: React.FC = () => {
                 color="warning" 
                 size="small" 
               />
-              <Button
-                color="inherit"
-                startIcon={<RAGIcon />}
-                onClick={() => navigate('/admin?tab=rag')}
-                sx={{
-                  backgroundColor: location.pathname === '/admin/rag' ? 'rgba(255,255,255,0.1)' : 'transparent',
-                }}
-              >
-                RAG管理
-              </Button>
             </>
           ) : (
             // 来場者向けナビゲーション（管理画面へのリンクなし）
