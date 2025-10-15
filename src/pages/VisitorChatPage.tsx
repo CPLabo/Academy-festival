@@ -140,8 +140,8 @@ const VisitorChatPage: React.FC = () => {
     }}>
       {/* ヘッダー */}
       <Box sx={{ 
-        bgcolor: 'white', 
-        borderBottom: '1px solid #e5e5e7',
+        bgcolor: '#1976d2', 
+        borderBottom: '1px solid #1565c0',
         px: { xs: 2, md: 4 },
         py: 2,
         position: 'sticky',
@@ -158,12 +158,12 @@ const VisitorChatPage: React.FC = () => {
           <Box>
             <Typography variant="h5" sx={{ 
               fontWeight: 600, 
-              color: '#202123',
+              color: 'white',
               fontSize: { xs: '1.2rem', md: '1.5rem' }
             }}>
               学園祭案内チャット
             </Typography>
-            <Typography variant="body2" sx={{ color: '#6b7280' }}>
+            <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
               学園祭について何でもお聞きください！
             </Typography>
           </Box>
