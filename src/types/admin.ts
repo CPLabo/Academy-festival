@@ -43,6 +43,7 @@ export interface SystemConfig {
   max_message_length: number;
   enable_logging: boolean;
   log_level: string;
+  chat_service_enabled: boolean;
 }
 
 export interface AdminResponse<T = any> {

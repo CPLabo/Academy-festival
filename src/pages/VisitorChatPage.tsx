@@ -164,7 +164,7 @@ const VisitorChatPage: React.FC = () => {
               学園祭案内チャット
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-              学園祭について何でもお聞きください！
+              CPゼミ企画
             </Typography>
           </Box>
         </Box>
@@ -237,12 +237,31 @@ const VisitorChatPage: React.FC = () => {
                 </Typography>
                 <Typography variant="body1" sx={{ 
                   color: '#6b7280',
-                  mb: 4,
+                  mb: 2,
                   maxWidth: '600px',
                   mx: 'auto'
                 }}>
                   開催時間、場所、食べ物、イベントなど、お気軽にご質問ください。
                 </Typography>
+                
+                {/* 注意書き */}
+                <Box sx={{ 
+                  bgcolor: '#fef3c7', 
+                  border: '1px solid #fbbf24',
+                  borderRadius: 2,
+                  p: 2,
+                  mb: 4,
+                  maxWidth: '600px',
+                  mx: 'auto'
+                }}>
+                  <Typography variant="body2" sx={{ 
+                    color: '#92400e',
+                    textAlign: 'center',
+                    fontWeight: 500
+                  }}>
+                    ※チャットボットの回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。
+                  </Typography>
+                </Box>
 
                 {/* よくある質問 */}
                 <Box sx={{ mb: 4 }}>

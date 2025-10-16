@@ -13,6 +13,10 @@ import {
   Alert,
   IconButton,
   Tooltip,
+  Switch,
+  FormControlLabel,
+  Chip,
+  Divider,
 } from '@mui/material';
 import {
   People as PeopleIcon,
@@ -24,21 +28,25 @@ import {
   Refresh as RefreshIcon,
   Memory as GpuIcon,
   Visibility as VisibilityIcon,
+  Chat as ChatIcon,
+  Settings as SettingsIcon,
 } from '@mui/icons-material';
 import { adminService } from '../services/adminService';
-import { SystemStats as SystemStatsType } from '../types/admin';
+import { SystemStats as SystemStatsType, SystemConfig } from '../types/admin';
 
 const SystemStats: React.FC = () => {
   const [stats, setStats] = useState<SystemStatsType | null>(null);
+  const [config, setConfig] = useState<SystemConfig | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
+  const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
-    loadStats();
+    loadData();
   }, []);
 
-  const loadStats = async (isRefresh = false) => {
+  const loadData = async (isRefresh = false) => {
     try {
       if (isRefresh) {
         setRefreshing(true);
@@ -46,10 +54,14 @@ const SystemStats: React.FC = () => {
         setLoading(true);
       }
       setError(null);
-      const data = await adminService.getSystemStats();
-      setStats(data);
+      const [statsData, configData] = await Promise.all([
+        adminService.getSystemStats(),
+        adminService.getSystemConfig()
+      ]);
+      setStats(statsData);
+      setConfig(configData);
     } catch (err) {
-      setError(err instanceof Error ? err.message : '統計情報の取得に失敗しました');
+      setError(err instanceof Error ? err.message : 'データの取得に失敗しました');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -57,7 +69,22 @@ const SystemStats: React.FC = () => {
   };
 
   const handleRefresh = () => {
-    loadStats(true);
+    loadData(true);
+  };
+
+  const handleChatServiceToggle = async (enabled: boolean) => {
+    if (!config) return;
+    
+    try {
+      setUpdating(true);
+      const updatedConfig = { ...config, chat_service_enabled: enabled };
+      await adminService.updateSystemConfig(updatedConfig);
+      setConfig(updatedConfig);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '設定の更新に失敗しました');
+    } finally {
+      setUpdating(false);
+    }
   };
 
   if (loading) {
@@ -147,6 +174,60 @@ const SystemStats: React.FC = () => {
           </IconButton>
         </Tooltip>
       </Box>
+
+      {/* チャットサービス制御 */}
+      {config && (
+        <Card sx={{ mb: 3, border: '1px solid #e0e0e0' }}>
+          <CardContent>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+              <SettingsIcon sx={{ mr: 1, color: 'primary.main' }} />
+              <Typography variant="h6" component="h3">
+                チャットサービス制御
+              </Typography>
+            </Box>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                <ChatIcon sx={{ color: config.chat_service_enabled ? 'success.main' : 'error.main' }} />
+                <Box>
+                  <Typography variant="body1" sx={{ fontWeight: 500 }}>
+                    チャットサービス
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {config.chat_service_enabled ? '現在公開中です' : '現在停止中です'}
+                  </Typography>
+                </Box>
+                <Chip
+                  label={config.chat_service_enabled ? '公開中' : '停止中'}
+                  color={config.chat_service_enabled ? 'success' : 'error'}
+                  size="small"
+                />
+              </Box>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={config.chat_service_enabled}
+                    onChange={(e) => handleChatServiceToggle(e.target.checked)}
+                    disabled={updating}
+                    color="primary"
+                  />
+                }
+                label={config.chat_service_enabled ? '公開' : '非公開'}
+                labelPlacement="start"
+              />
+            </Box>
+            {updating && (
+              <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                <CircularProgress size={16} sx={{ mr: 1 }} />
+                <Typography variant="caption" color="text.secondary">
+                  設定を更新中...
+                </Typography>
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+      )}
+
+      <Divider sx={{ mb: 3 }} />
       
       <Grid container spacing={3}>
         {statCards.map((card, index) => (
