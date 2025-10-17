@@ -161,7 +161,7 @@ const VisitorChatPage: React.FC = () => {
               color: 'white',
               fontSize: { xs: '1.2rem', md: '1.5rem' }
             }}>
-              学園祭案内チャット
+              学園祭案内チャット（軽量版）
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
               CPゼミ企画
