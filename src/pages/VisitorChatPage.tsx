@@ -122,11 +122,11 @@ const VisitorChatPage: React.FC = () => {
   const sampleQuestions = [
     '開催時間は？',
     '会場はどこ？',
-    '食べ物はある？',
-    'アクセス方法は？',
+    'おみやげはある？',
+    'シャトルバスの時間は？',
     '駐車場はある？',
     '雨天時はどうなる？',
-    '入場料はかかる？',
+    'ヘリの搭乗について',
     'おすすめのイベントは？'
   ];
 
@@ -164,7 +164,7 @@ const VisitorChatPage: React.FC = () => {
               学園祭RAGチャットボット（試験版）
             </Typography>
             <Typography variant="body2" sx={{ color: 'rgba(255, 255, 255, 0.8)' }}>
-              CPゼミ企画
+              CPゼミ企画　※生成内容が不安定な場合があります。重要な情報は確認するようにしてください。
             </Typography>
           </Box>
         </Box>
@@ -259,7 +259,7 @@ const VisitorChatPage: React.FC = () => {
                     textAlign: 'center',
                     fontWeight: 500
                   }}>
-                    ※チャットボットの回答は必ずしも正しいとは限りません。重要な情報は確認するようにしてください。
+                    ※生成内容が不安定な場合があります。重要な情報は確認するようにしてください。
                   </Typography>
                 </Box>
 
