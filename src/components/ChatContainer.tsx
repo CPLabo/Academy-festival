@@ -107,7 +107,7 @@ const ChatContainer: React.FC = () => {
       {/* ヘッダー */}
       <Box sx={{ p: 2, borderBottom: 1, borderColor: 'divider' }}>
         <Typography variant="h6" component="div">
-          学園祭案内チャット（軽量版）
+          学園祭RAGチャットボット（試験版）
         </Typography>
         <Typography variant="body2" color="text.secondary">
           {isConnected ? '接続中' : '接続エラー'}

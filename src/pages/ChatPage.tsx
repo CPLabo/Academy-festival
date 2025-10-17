@@ -13,7 +13,7 @@ const ChatPage: React.FC = () => {
       <Paper elevation={3} sx={{ p: 3, height: '80vh' }}>
         <Box sx={{ mb: 3 }}>
           <Typography variant="h4" component="h1" gutterBottom align="center">
-            学園祭案内チャット（軽量版）
+            学園祭RAGチャットボット（試験版）
           </Typography>
           <Typography variant="body1" color="text.secondary" align="center" sx={{ mb: 3 }}>
             学園祭に関する質問を日本語でお気軽にお聞きください。

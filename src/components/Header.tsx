@@ -48,7 +48,7 @@ const Header: React.FC = () => {
           component="div"
           sx={{ flexGrow: 1, fontWeight: 'bold' }}
         >
-          学園祭案内チャット（軽量版）
+          学園祭RAGチャットボット（試験版）
         </Typography>
         
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
