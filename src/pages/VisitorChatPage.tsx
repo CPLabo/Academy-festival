@@ -65,9 +65,11 @@ const VisitorChatPage: React.FC = () => {
   const sendMessage = async () => {
     if (!inputMessage.trim() || !sessionId || isLoading) return;
 
+    // メッセージを保存してからクリア
+    const messageToSend = inputMessage.trim();
     const userMessage: ChatMessage = {
       role: 'user',
-      content: inputMessage,
+      content: messageToSend,
       timestamp: new Date().toISOString(),
     };
 
@@ -85,7 +87,7 @@ const VisitorChatPage: React.FC = () => {
         },
         body: JSON.stringify({
           session_id: sessionId,
-          message: inputMessage,
+          message: messageToSend,
         }),
       });
 
@@ -114,9 +116,17 @@ const VisitorChatPage: React.FC = () => {
     }
   };
 
-  const handleSampleQuestion = (question: string) => {
+  const handleSampleQuestion = async (question: string) => {
     setInputMessage(question);
     setShowWelcome(false);
+    
+    // よくある質問をクリックしたら自動的に送信
+    if (sessionId && !isLoading) {
+      // 少し遅延を入れてUIの更新を待つ
+      setTimeout(() => {
+        sendMessage();
+      }, 100);
+    }
   };
 
   const sampleQuestions = [
